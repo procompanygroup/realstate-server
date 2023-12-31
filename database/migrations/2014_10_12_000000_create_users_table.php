@@ -23,11 +23,9 @@ return new class extends Migration
             $table->integer('gender')->nullable();
             $table->string('maritalStatus')->nullable();
             $table->string('image')->nullable();
-        
-             
-
             $table->rememberToken();
             $table->timestamps();
+             
         });
     }
 
