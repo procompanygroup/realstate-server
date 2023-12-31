@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Dec 31, 2023 at 03:37 PM
+-- Generation Time: Dec 31, 2023 at 10:48 PM
 -- Server version: 8.0.31
 -- PHP Version: 8.2.0
 
@@ -52,7 +52,7 @@ CREATE TABLE IF NOT EXISTS `migrations` (
   `migration` varchar(200) COLLATE utf8mb4_unicode_ci NOT NULL,
   `batch` int NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `migrations`
@@ -64,7 +64,8 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (3, '2014_10_12_100000_create_password_resets_table', 1),
 (4, '2019_08_19_000000_create_failed_jobs_table', 1),
 (5, '2019_12_14_000001_create_personal_access_tokens_table', 1),
-(6, '2023_12_31_152531_create_realstates_table', 1);
+(6, '2023_12_31_152531_create_realstates_table', 1),
+(7, '2023_12_31_212322_add_is_favorite_to_realstates_table', 2);
 
 -- --------------------------------------------------------
 
@@ -135,10 +136,21 @@ CREATE TABLE IF NOT EXISTS `realstates` (
   `image` varchar(200) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `owner` varchar(200) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `userid` int DEFAULT NULL,
+  `isFavorite` int NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `realstates`
+--
+
+INSERT INTO `realstates` (`id`, `name`, `desc`, `realmodel`, `periodtime`, `price`, `location`, `image`, `owner`, `userid`, `isFavorite`, `created_at`, `updated_at`) VALUES
+(1, 'floor 1', '4 rooms', 'House', '12', '1000', '@33.5194136,36.3699879,14z', NULL, 'ahmad', NULL, 0, '2024-01-30 22:42:30', '2024-01-30 22:42:30'),
+(2, 'Shop1', '300 meters', 'Shop', '12', '1000', '@33.5147579,36.3856735,17z', NULL, 'mahmod', NULL, 0, '2024-01-30 22:43:30', '2024-01-30 22:43:30'),
+(3, 'farm 2', '200 meters', 'Farm', '24', '2000', '@33.5156227,36.3868657,20z', NULL, 'Maher', NULL, 0, '2024-01-30 22:44:30', '2024-01-30 22:44:30'),
+(4, 'Ground1', '400 meters', 'Ground', '24', '3000', '@33.5157083,36.3861248,19z', NULL, 'samer', NULL, 1, '2024-01-30 22:45:30', '2024-01-30 22:45:30');
 
 -- --------------------------------------------------------
 
@@ -172,7 +184,7 @@ CREATE TABLE IF NOT EXISTS `users` (
 --
 
 INSERT INTO `users` (`id`, `name`, `email`, `email_verified_at`, `password`, `userName`, `mobile`, `nationality`, `gender`, `maritalStatus`, `image`, `remember_token`, `created_at`, `updated_at`) VALUES
-(1, 'ahmad2', 'ahmad@gmail.com', NULL, '$2y$10$QgMvP81Hhqjc4b.6JwDIBO2lVKxOPJNp5WPEjPTMuld5ZbE7aXz5S', 'ahmad', '09494994', 'uae', 1, 'marrid', NULL, NULL, '2023-12-27 12:32:56', '2023-12-27 12:32:56');
+(1, 'ahmad2', 'ahmad@gmail.com', NULL, '$2y$10$QgMvP81Hhqjc4b.6JwDIBO2lVKxOPJNp5WPEjPTMuld5ZbE7aXz5S', 'ahmad2', '09494994', 'uae', 1, 'marrid', NULL, NULL, '2023-12-27 12:32:56', '2023-12-27 12:32:56');
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
