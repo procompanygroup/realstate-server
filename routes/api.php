@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Api\UserController;
+use App\Http\Controllers\Api\RealstateController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -24,6 +25,12 @@ Route::middleware(['auth:api' ])->group(function () {
 Route::prefix('/users')->group(function () {
     Route::get('/view', [UserController::class, 'index']);
     Route::get('/getLoginUser', [UserController::class, 'getLoginUser']); 
+   
+});
+
+Route::prefix('/realstate')->group(function () {
+    Route::get('/show', [RealstateController::class, 'getAllStates']);
+    Route::get('/iteminfo', [RealstateController::class, 'getStatesbyId']); 
    
 });
 

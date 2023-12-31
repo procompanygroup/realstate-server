@@ -22,6 +22,7 @@ return new class extends Migration
             $table->string('image')->nullable() ;
             $table->string('owner')->nullable() ;
             $table->integer('userid')->nullable() ;
+           // $table->integer('isFavorite')->nullable() ;
             $table->timestamps();
         });
     }
