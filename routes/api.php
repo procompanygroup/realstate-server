@@ -30,7 +30,7 @@ Route::prefix('/users')->group(function () {
 
 Route::prefix('/realstate')->group(function () {
     Route::get('/show', [RealstateController::class, 'getAllStates']);
-    Route::get('/iteminfo', [RealstateController::class, 'getStatesbyId']); 
+    Route::post('/iteminfo', [RealstateController::class, 'getStatesbyId']); 
    
 });
 
