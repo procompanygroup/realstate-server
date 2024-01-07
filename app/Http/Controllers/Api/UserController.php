@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Router;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
-use Image;
+ 
 
 use File;
 use Illuminate\Http\RedirectResponse;
@@ -15,6 +15,10 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Routing\Redirector;
 //use App\Http\Requests\Admin\User\UpdateUserRequest;
 use App\Http\Requests\Api\User\StoreUserRequest;
+ 
+use Illuminate\Support\Carbon;
+use Intervention\Image\ImageManager;
+use Intervention\Image\Drivers\Gd\Driver;
 
 class UserController extends Controller
 {
@@ -133,7 +137,7 @@ if(is_null($userdb)){
           }
           $imagePath = $path . '\\' . $imageName;
           //Upload the Image
-          Image::make($image_tmp)->save($imagePath);
+       //   Image::make($image_tmp)->save($imagePath);
           $user->image = $imageName;
           $user->save();
         }
@@ -203,7 +207,7 @@ if(is_null($userdb)){
 
     } else {
 
-      $current_photo = DB::table('users')->find($userid)->image;
+      $current_photo = "";//DB::table('users')->find($userid)->image;
       //update image
       if ($request->hasFile('image')) {
         $image_tmp = $request->file('image');
@@ -228,7 +232,7 @@ if(is_null($userdb)){
           }
           $imagePath = $path . '\\' . $imageName;
           //Upload the Image
-          Image::make($image_tmp)->save($imagePath);
+       //  Image::make($image_tmp)->save($imagePath);
 
         }
       } else {
@@ -273,5 +277,67 @@ if(is_null($userdb)){
     return redirect()->route('cpanel.users.view');
     // return  $this->index();
     //   return redirect()->route('users.index');
+  }
+
+  public function storeImage(Request $filerequest)
+  {
+
+      // $formdata = request(['id']);
+
+      $formdata = $filerequest->all();
+      $id = $formdata["id"];
+      $imagemodel = User::find($id);
+$oldimage=  $imagemodel->image;
+$oldimagename=basename($oldimage);
+      $path = 'media/users';
+    
+      $separator = '/';
+      $oldimagepath = $path . $separator .$oldimagename;
+      // $user->photo ="image.jpg";   
+
+      //save photo
+      if ($filerequest->hasFile('image')) {
+          // $imagemodel->save();
+          $image_tmp = $filerequest->file('image');
+          if ($image_tmp->isValid()) {
+              $folderpath = $path . $separator;
+              //Get image Extension
+              $extension = $image_tmp->getClientOriginalExtension();
+              //Generate new Image Name
+              //Hash::make($request->password),
+              $now = Carbon::now();
+              $imageName = rand(10000, 99999) . $imagemodel->id . '.' . $extension;
+
+              if (!File::isDirectory($folderpath)) {
+                  File::makeDirectory($folderpath, 0777, true, true);
+              }
+              $imagePath = $folderpath . $imageName;
+              //Upload the Image
+              $manager = new ImageManager(new Driver());
+
+// read image from filesystem
+$image = $manager->read($image_tmp);
+//$image= $image->toWebp(75);
+$image->save($imagePath);
+$fullpath= url($imagePath);
+          // Image::read($image_tmp)->save($imagePath);
+              //   $imagemodel->image = $imagePath;
+              User::find($id)->update([
+                  "image" => $fullpath
+              ]);
+              //  $imagemodel->save();
+              if(File::exists($oldimagepath )){
+                File::delete($oldimagepath );
+              }
+          }
+      }
+      return response()->json([
+          'message' => "success",
+          'path'=>  $fullpath,
+          'oldpath'=> $oldimagepath
+      ]);
+
+
+
   }
 }

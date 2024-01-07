@@ -25,7 +25,8 @@ Route::middleware(['auth:api' ])->group(function () {
 Route::prefix('/users')->group(function () {
     Route::get('/view', [UserController::class, 'index']);
     Route::get('/getLoginUser', [UserController::class, 'getLoginUser']); 
-    Route::post('/getUserByName', [UserController::class, 'getUserByName']); 
+    Route::post('/getUserByName', [UserController::class, 'getUserByName']);
+    Route::post('/saveImage', [UserController::class, 'storeImage']); 
 });
 
 Route::prefix('/realstate')->group(function () {

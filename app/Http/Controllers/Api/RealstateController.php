@@ -139,9 +139,9 @@ class RealstateController extends Controller
         // $user->photo ="image.jpg";   
 
         //save photo
-        if ($filerequest->hasFile('photo')) {
+        if ($filerequest->hasFile('image')) {
             // $imagemodel->save();
-            $image_tmp = $filerequest->file('photo');
+            $image_tmp = $filerequest->file('image');
             if ($image_tmp->isValid()) {
                 $folderpath = $path . $separator;
                 //Get image Extension
