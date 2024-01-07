@@ -334,7 +334,7 @@ $fullpath= url($imagePath);
       return response()->json([
           'message' => "success",
           'path'=>  $fullpath,
-          'oldpath'=> $oldimagepath
+          
       ]);
 
 
