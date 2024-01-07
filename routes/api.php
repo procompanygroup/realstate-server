@@ -25,13 +25,14 @@ Route::middleware(['auth:api' ])->group(function () {
 Route::prefix('/users')->group(function () {
     Route::get('/view', [UserController::class, 'index']);
     Route::get('/getLoginUser', [UserController::class, 'getLoginUser']); 
-   
+    Route::post('/getUserByName', [UserController::class, 'getUserByName']); 
 });
 
 Route::prefix('/realstate')->group(function () {
     Route::get('/show', [RealstateController::class, 'getAllStates']);
     Route::post('/iteminfo', [RealstateController::class, 'getStatesbyId']); 
-   
+    Route::post('/saveImage', [RealstateController::class, 'storeImage']);
+     
 });
 
 });

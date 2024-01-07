@@ -3,8 +3,14 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Api\Realstate;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\DB; 
+use File;
+use Illuminate\Support\Carbon;
+use Intervention\Image\ImageManager;
+use Intervention\Image\Drivers\Gd\Driver;
+
 class RealstateController extends Controller
 {
     /**
@@ -18,52 +24,58 @@ class RealstateController extends Controller
     {
         //
         $List = DB::table("realstates")
-            ->select( 'id', 'name',
-            'desc',
-            'realmodel',
-            'periodtime',
-           // 'price',
-          //  'location',
-           // 'owner',
-           // 'userid',
-            'image',
-    
-            'isFavorite',)
+            ->select(
+                'id',
+                'name',
+                'desc',
+                'realmodel',
+                'periodtime',
+                // 'price',
+                //  'location',
+                // 'owner',
+                // 'userid',
+                'image',
+
+                'isFavorite',
+            )
             ->get();
-       
+
         return response()->json([
-            'list' =>  $List
-          ]);
+            'list' => $List
+        ]);
     }
     public function getStatesbyId()
     {
         //
         $formdata = request(['id']);
-if(isset($formdata["id"])){
+        if (isset($formdata["id"])) {
 
 
-        $item = DB::table("realstates")
-        ->where('id',$formdata["id"])
-            ->select( 'id', 'name',
-            'desc',
-            'realmodel',
-            'periodtime',
-           'price',
-           'location',
-           'owner',
-           'userid',
-            'image',
-    
-            'isFavorite',)
-            ->get();
-       
-        return response()->json([
-            'iteminfo' =>  $item 
-          ]);
-        }else{
+            $item = DB::table("realstates")
+                ->where('id', $formdata["id"])
+                ->select(
+                    'id',
+                    'name',
+                    'desc',
+                    'realmodel',
+                    'periodtime',
+                    'price',
+                    'location',
+                    'owner',
+                    'userid',
+                    'image',
+
+                    'isFavorite',
+                )
+                ->get();
+
             return response()->json([
-                'error' =>  "no id"
-              ]); 
+                'iteminfo' => $item
+            ]);
+        } else {
+            return response()->json([
+                'error' => "no id"
+            ]);
         }
     }
     /**
@@ -112,5 +124,57 @@ if(isset($formdata["id"])){
     public function destroy(string $id)
     {
         //
+    }
+    public function storeImage(Request $filerequest)
+    {
+
+        // $formdata = request(['id']);
+
+        $formdata = $filerequest->all();
+        $id = $formdata["id"];
+        $imagemodel = Realstate::find($id);
+
+        $path = 'media';
+        $separator = '/';
+        // $user->photo ="image.jpg";   
+
+        //save photo
+        if ($filerequest->hasFile('photo')) {
+            // $imagemodel->save();
+            $image_tmp = $filerequest->file('photo');
+            if ($image_tmp->isValid()) {
+                $folderpath = $path . $separator;
+                //Get image Extension
+                $extension = $image_tmp->getClientOriginalExtension();
+                //Generate new Image Name
+                //Hash::make($request->password),
+                $now = Carbon::now();
+                $imageName = rand(10000, 99999) . $imagemodel->id . '.' . $extension;
+
+                if (!File::isDirectory($folderpath)) {
+                    File::makeDirectory($folderpath, 0777, true, true);
+                }
+                $imagePath = $folderpath . $separator . $imageName;
+                //Upload the Image
+                $manager = new ImageManager(new Driver());
+
+// read image from filesystem
+$image = $manager->read($image_tmp);
+//$image= $image->toWebp(75);
+$image->save($imagePath);
+            // Image::read($image_tmp)->save($imagePath);
+                //   $imagemodel->image = $imagePath;
+                Realstate::find($id)->update([
+                    "image" => $imagePath
+                ]);
+                //  $imagemodel->save();
+            }
+        }
+        return response()->json([
+            'message' => "success"
+        ]);
+
+
+
     }
 }

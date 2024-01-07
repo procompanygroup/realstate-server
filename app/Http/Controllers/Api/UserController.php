@@ -26,6 +26,24 @@ class UserController extends Controller
     // return view('admin.user.showusers',['users' => $users]); 
     return response()->json($users);
   }
+  public function getUserByName()
+  {
+    //
+    $formdata = request(['userName']);
+    $user = DB::table('users')->where('userName',$formdata['userName'])->first();
+    // return view('admin.user.showusers',['users' => $users]); 
+    return response()->json( [
+      'id'=> $user->id,
+      'userName' => $user->userName,
+      'email' => $user->email,
+      'mobile' => $user->mobile,
+      'nationality' => $user->nationality,
+      'gender' => $user->gender,
+      'maritalStatus' => $user->maritalStatus,
+      'image' => $user->image,
+      'password' => "",
+    ]);
+  }
   public function getLoginUser()
   {
     //
