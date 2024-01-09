@@ -35,7 +35,7 @@ class RealstateController extends Controller
                 // 'owner',
                 // 'userid',
                 'image',
-
+                'category',
                 'isFavorite',
             )
             ->get();
@@ -64,7 +64,7 @@ class RealstateController extends Controller
                     'owner',
                     'userid',
                     'image',
-
+                    'category',
                     'isFavorite',
                 )
                 ->get();

@@ -18,7 +18,7 @@ class Realstate extends Model
         'owner',
         'userid',
         'image',
-
+        'category',
         'isFavorite',
 
     ];
