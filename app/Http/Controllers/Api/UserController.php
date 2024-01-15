@@ -19,7 +19,8 @@ use App\Http\Requests\Api\User\StoreUserRequest;
 use Illuminate\Support\Carbon;
 use Intervention\Image\ImageManager;
 use Intervention\Image\Drivers\Gd\Driver;
-
+ 
+use Illuminate\Support\Facades\Storage;
 class UserController extends Controller
 {
   public function index()
@@ -278,7 +279,6 @@ if(is_null($userdb)){
     // return  $this->index();
     //   return redirect()->route('users.index');
   }
-
   public function storeImage(Request $filerequest)
   {
 
@@ -296,8 +296,34 @@ $oldimagename=basename($oldimage);
       // $user->photo ="image.jpg";   
 
       //save photo
+     
       if ($filerequest->hasFile('image')) {
-          // $imagemodel->save();
+        $file= $filerequest->file('image');
+        $dir="images/users";
+      //  $filename= rand(10000, 99999).".".$file->getClientOriginalExtension();
+        $filename= rand(10000, 99999).".webp";
+         //Upload the Image
+         $manager = new ImageManager(new Driver());
+
+         // read image from filesystem
+         $image = $manager->read($file);
+        $image= $image->toWebp(75);
+
+       // $image
+     //  Storage::makeDirectory( 'public/images');
+     //  if (!File::isDirectory(storage_path('app/public').'/'.'images')) {
+      if (!File::isDirectory(Storage::url('/'. $dir))) {
+        Storage::makeDirectory('public/'. $dir);
+    }
+         $image->save(storage_path('app/public').'/'. $dir.'/'.$filename);
+         $url =  url(Storage::url($dir.'/'.$filename));
+       //  $fullpath= url($imagePath);
+/*
+        $path =  $file->storePubliclyAs("public/images",$filename);
+        $url =  url(Storage::url($path));
+      */
+     
+      /*
           $image_tmp = $filerequest->file('image');
           if ($image_tmp->isValid()) {
               $folderpath = $path . $separator;
@@ -320,24 +346,120 @@ $image = $manager->read($image_tmp);
 //$image= $image->toWebp(75);
 $image->save($imagePath);
 $fullpath= url($imagePath);
+
+*/
+
+
           // Image::read($image_tmp)->save($imagePath);
               //   $imagemodel->image = $imagePath;
               User::find($id)->update([
-                  "image" => $fullpath
+                  "image" =>   $url
               ]);
               //  $imagemodel->save();
+              Storage::delete("public/". $dir.'/'.$oldimagename);
+              /*
               if(File::exists($oldimagepath )){
                 File::delete($oldimagepath );
               }
+              */
           }
-      }
+       
       return response()->json([
           'message' => "success",
-          'path'=>  $fullpath,
+          'path'=>   $url,
           
       ]);
 
 
 
   }
+/*
+  public function storeImage(Request $filerequest)
+  {
+
+      // $formdata = request(['id']);
+
+      $formdata = $filerequest->all();
+      $id = $formdata["id"];
+      $imagemodel = User::find($id);
+$oldimage=  $imagemodel->image;
+$oldimagename=basename($oldimage);
+      $path = 'media/users';
+    
+      $separator = '/';
+      $oldimagepath = $path . $separator .$oldimagename;
+      // $user->photo ="image.jpg";   
+
+      //save photo
+     
+      if ($filerequest->hasFile('image')) {
+        $file= $filerequest->file('image');
+        
+        $filename= rand(10000, 99999).".".$file->getClientOriginalExtension();
+         //Upload the Image
+         $manager = new ImageManager(new Driver());
+
+         // read image from filesystem
+         $image = $manager->read($file);
+      //  $image= $image->toWebp(75);
+       // $image
+         $image->save( storage_path('app/public').'/'.$filename);
+         $url =  url(Storage::url($filename));
+       //  $fullpath= url($imagePath);
+/*
+        $path =  $file->storePubliclyAs("public/images",$filename);
+        $url =  url(Storage::url($path));
+      */
+     
+      /*
+          $image_tmp = $filerequest->file('image');
+          if ($image_tmp->isValid()) {
+              $folderpath = $path . $separator;
+              //Get image Extension
+              $extension = $image_tmp->getClientOriginalExtension();
+              //Generate new Image Name
+              //Hash::make($request->password),
+              $now = Carbon::now();
+              $imageName = rand(10000, 99999) . $imagemodel->id . '.' . $extension;
+
+              if (!File::isDirectory($folderpath)) {
+                  File::makeDirectory($folderpath, 0777, true, true);
+              }
+              $imagePath = $folderpath . $imageName;
+              //Upload the Image
+              $manager = new ImageManager(new Driver());
+
+// read image from filesystem
+$image = $manager->read($image_tmp);
+//$image= $image->toWebp(75);
+$image->save($imagePath);
+$fullpath= url($imagePath);
+
+
+
+
+          // Image::read($image_tmp)->save($imagePath);
+              //   $imagemodel->image = $imagePath;
+              User::find($id)->update([
+                  "image" =>   $url
+              ]);
+              //  $imagemodel->save();
+              Storage::delete("public/images/".$oldimagename);
+              /*
+              if(File::exists($oldimagepath )){
+                File::delete($oldimagepath );
+              }
+           
+          }
+       
+      return response()->json([
+          'message' => "success",
+          'path'=>   $url,
+          
+      ]);
+
+
+
+  }
+  */
 }
