@@ -316,7 +316,8 @@ $oldimagename=basename($oldimage);
         Storage::makeDirectory('public/'. $dir);
     }
          $image->save(storage_path('app/public').'/'. $dir.'/'.$filename);
-         $url =  url(Storage::url($dir.'/'.$filename));
+       //  $url =  url(Storage::url($dir.'/'.$filename));
+         $url =  url('storage/app/public'.'/'.$dir.'/'.$filename);
        //  $fullpath= url($imagePath);
 /*
         $path =  $file->storePubliclyAs("public/images",$filename);
